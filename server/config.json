@@ -1,0 +1,4 @@
+{
+    "connectionString": "mongodb://localhost/chat-app",
+    "secret": "secret"
+}
