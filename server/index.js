@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/errorHandler');
+const db = require('./helpers/db');
+const History = db.History;
 
 const app = express();
 const PORT = 8080;
@@ -21,12 +23,14 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });
 
-io.on("connection", socket => {
+io.on("connection", async socket => {
     const { id } = socket.client;
+    io.emit('messages', await History.find());
     console.log(`User connected: ${id}`);
     socket.on("chat message", msg => {
-        console.log(msg, 'qweqwe');
         io.emit("chat message", msg);
+        const message = new History(msg);
+        message.save();
     });
 });
 

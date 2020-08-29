@@ -20,6 +20,10 @@ export default function ChatComponent({ username }) {
             console.log(clients, 'QWEQWE');
             setUsers(clients);
         });
+        socket.on("messages", (messages) => {
+            console.log(messages);
+            setMessages(messages);
+        });
     }, []);
 
     const addMessage = (message) => {

@@ -4,7 +4,6 @@ const userService = require('./service');
 
 router.post('/login', authenticate);
 router.post('/register', register);
-router.get('/', getAll);
 router.get('/current', getCurrent);
 
 function authenticate(req, res, next) {
@@ -16,12 +15,6 @@ function authenticate(req, res, next) {
 function register(req, res, next) {
     userService.create(req.body)
         .then(() => res.status(200).json({}))
-        .catch(err => next(err));
-}
-
-function getAll(req, res, next) {
-    userService.getAll()
-        .then(users => res.json(users))
         .catch(err => next(err));
 }
 

@@ -5,5 +5,6 @@ mongoose.connect(config.connectionString, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 module.exports = {
-    User: require('../user/model')
+    User: require('../user/model'),
+    History: require('../history/model')
 };
