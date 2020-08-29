@@ -38,4 +38,5 @@ async function getAll() {
 module.exports = {
   authenticate,
   create,
+  getAll,
 };

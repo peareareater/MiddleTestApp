@@ -5,6 +5,8 @@ const jwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/errorHandler');
 const db = require('./helpers/db');
 const History = db.History;
+const UserList = db.UserList;
+const User = db.User;
 
 const app = express();
 const PORT = 8080;
@@ -26,11 +28,32 @@ app.listen(PORT, () => {
 io.on("connection", async socket => {
     const { id } = socket.client;
     io.emit('messages', await History.find());
+    io.emit('clients', await UserList.find());
+    io.emit('allClients', await User.find());
+    io.emit('send-nickname');
+
     console.log(`User connected: ${id}`);
+
     socket.on("chat message", msg => {
         io.emit("chat message", msg);
         const message = new History(msg);
         message.save();
+    });
+
+    socket.on('send-nickname', async function(username) {
+        try {
+            socket.nickname = username;
+            const user = new UserList({username});
+            await user.save();
+            io.emit('clients', await UserList.find());
+        }catch (e) {
+            console.log(e.message);
+        }
+    });
+
+    socket.on('disconnect', async function(username) {
+        await UserList.remove({ username });
+        io.emit('clients', await UserList.find());
     });
 });
 
